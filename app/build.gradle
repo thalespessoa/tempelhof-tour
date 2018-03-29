@@ -38,6 +38,7 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
 
     api 'com.android.support:recyclerview-v7:26.1.0'
+    api 'com.android.support:design:26.1.0'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     api 'com.jakewharton:butterknife:8.4.0'

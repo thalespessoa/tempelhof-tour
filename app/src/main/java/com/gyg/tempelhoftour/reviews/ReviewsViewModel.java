@@ -33,4 +33,8 @@ public class ReviewsViewModel extends ViewModel implements ApplicationComponent.
     public void refresh() {
         mDataRepository.refresh();
     }
+
+    public void saveReview(Review review) {
+
+    }
 }

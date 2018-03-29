@@ -37,6 +37,7 @@ public class DataRepository {
         mNetworkApi = networkApi;
         mLocalDatabase = localDatabase;
         mApplication = application;
+        mSharedPref = application.getSharedPreferences("gygPrefs", Context.MODE_PRIVATE);
 
         mDiskIO = Executors.newSingleThreadExecutor();
 
@@ -108,7 +109,6 @@ public class DataRepository {
     }
 
     private int getLastPageLoaded() {
-        mSharedPref = mApplication.getSharedPreferences("gygPrefs", Context.MODE_PRIVATE);
         return mSharedPref.getInt("nextPage", 0);
     }
 }

@@ -6,22 +6,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gyg.tempelhoftour.app.AppConfig;
 import com.gyg.tempelhoftour.data.model.ReviewsResponse;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Headers;
+import retrofit2.http.Query;
 
 /**
  * Class responsible for the communication with server
  * All remote data access comes from here.
- *
+ * <p>
  * Created by thalespessoa on 2/19/18.
  */
 
@@ -32,15 +28,8 @@ public class NetworkApi {
 
     public NetworkApi() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request original = chain.request();
-                        Request request = original.newBuilder().build();
-                        return chain.proceed(request);
-                    }
-                });
-        clientBuilder.addNetworkInterceptor(new StethoInterceptor());
+                .addNetworkInterceptor(new StethoInterceptor());
+
         OkHttpClient client = clientBuilder.build();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -59,7 +48,10 @@ public class NetworkApi {
     }
 
     public interface ReviewsApi {
-        @GET("reviews.json?count=15&page=0&type=&sortBy=date_of_review&direction=DESC")
-        Call<ReviewsResponse> fetch();
+        @Headers({
+                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0) Gecko/20100101 Firefox/60.0"
+        })
+        @GET("reviews.json?count=15&type=&sortBy=date_of_review&direction=DESC")
+        Call<ReviewsResponse> fetch(@Query("page") int page);
     }
 }

@@ -4,11 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
 
 /**
  * Created by thalespessoa on 3/29/18.
@@ -20,6 +17,7 @@ public class Review {
 
     @PrimaryKey
     @NonNull
+    @JsonProperty("review_id")
     private int id;
     private double rating;
     private String title;

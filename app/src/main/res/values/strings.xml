@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tempelhof Tour</string>
+    <string name="app_name">Tempelhof Tour Reviews</string>
 
     <string name="error_server">Server error. Please check your internet.</string>
     <string name="error_unknown">Erro desconhecido.</string>

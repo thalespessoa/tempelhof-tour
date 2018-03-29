@@ -16,7 +16,7 @@ import java.util.List;
 @Dao
 public interface ReviewDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<Review> reviews);
 
     @Query("SELECT * FROM reviews")

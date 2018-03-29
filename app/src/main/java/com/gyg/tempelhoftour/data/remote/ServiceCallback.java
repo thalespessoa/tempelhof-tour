@@ -6,7 +6,7 @@ import retrofit2.Response;
 
 /**
  * Callback to handle retrofit results
- * 
+ *
  * Created by thalespessoa on 2/20/18.
  */
 
@@ -17,6 +17,7 @@ public abstract class ServiceCallback<T> implements Callback<T> {
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
+        System.out.println("ServiceCallback.onResponse: "+response);
         if (response.isSuccessful()) {
             onSuccess(response.body());
         } else {
@@ -26,6 +27,7 @@ public abstract class ServiceCallback<T> implements Callback<T> {
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
+        System.out.println("ServiceCallback.onFailure: "+t.getLocalizedMessage());
         onError(new HttpException(HttpException.ERROR_SERVER));
     }
 }

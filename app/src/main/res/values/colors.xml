@@ -6,7 +6,9 @@
     <color name="colorAccentDark">#2d8019</color>
 
     <color name="colorBaseLight">#FFFFFF</color>
-    <color name="colorBase">#D9D9D9</color>
+    <color name="colorBase">#eaeaea</color>
     <color name="colorBaseMid">#61696b</color>
     <color name="colorBaseDark">#353535</color>
+
+    <color name="colorWarning">#a30b0b</color>
 </resources>

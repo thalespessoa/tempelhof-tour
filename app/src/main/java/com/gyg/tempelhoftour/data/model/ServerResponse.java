@@ -1,21 +1,20 @@
 package com.gyg.tempelhoftour.data.model;
 
-import java.util.List;
-
 /**
  * Created by thalespessoa on 3/29/18.
  */
 
-public class ReviewsResponse {
+public class ServerResponse<T> {
 
     boolean status;
-    List<Review> data;
+    String message;
+    T data;
 
-    public List<Review> getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(List<Review> data) {
+    public void setData(T data) {
         this.data = data;
     }
 
@@ -25,5 +24,13 @@ public class ReviewsResponse {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

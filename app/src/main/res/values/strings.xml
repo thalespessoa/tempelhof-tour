@@ -6,6 +6,9 @@
     <string name="title">Title</string>
     <string name="message">Message</string>
     <string name="author">Author</string>
+    <string name="delete">Delete</string>
+    <string name="retry">Retry</string>
+    <string name="not_published">Not published</string>
 
     <string name="error_server">Server error. Please check your internet.</string>
     <string name="error_unknown">Erro desconhecido.</string>

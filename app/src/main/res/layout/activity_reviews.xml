@@ -16,8 +16,8 @@
             android:layout_marginRight="5dp"
             android:background="@color/colorBaseLight"
             android:clipToPadding="false"
-            android:paddingBottom="20dp"
-            android:paddingTop="5dp" />
+            android:paddingBottom="100dp"
+            android:paddingTop="5dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton

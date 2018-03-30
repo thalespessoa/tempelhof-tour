@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
+import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
 /**
@@ -11,7 +12,7 @@ import com.gyg.tempelhoftour.data.model.Review;
  */
 
 
-@Database(entities = {Review.class}, version = 1, exportSchema = false)
+@Database(entities = {Review.class, PendingReview.class}, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class LocalDatabase extends RoomDatabase {
     public abstract ReviewDao reviewDao();

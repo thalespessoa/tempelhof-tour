@@ -1,17 +1,22 @@
 package com.gyg.tempelhoftour.reviews;
 
 import android.arch.paging.PagedListAdapter;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.gyg.tempelhoftour.R;
+import com.gyg.tempelhoftour.app.AppConfig;
+import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,14 +28,17 @@ import butterknife.ButterKnife;
 
 public class ReviewsAdapter extends PagedListAdapter<Review, ReviewsAdapter.ReviewViewHolder> {
 
-    OnSelectListener onSelectListener;
+    static SimpleDateFormat dateFormat = new SimpleDateFormat(AppConfig.APP_DATE_FORMAT);
 
-    public void setOnSelectListener(OnSelectListener onSelectListener) {
-        this.onSelectListener = onSelectListener;
+    OnInteractionListener onInteractionListener;
+
+    public void setOnInteractionListener(OnInteractionListener onInteractionListener) {
+        this.onInteractionListener = onInteractionListener;
     }
 
-    interface OnSelectListener {
-        void onSelectEvent(Review event);
+    interface OnInteractionListener {
+        void onClickDelete(PendingReview review);
+        void onClickRetry(PendingReview review);
     }
 
     public ReviewsAdapter() {
@@ -65,12 +73,35 @@ public class ReviewsAdapter extends PagedListAdapter<Review, ReviewsAdapter.Revi
         holder.message.setText(review.getMessage());
         holder.rating.setText(String.valueOf(review.getRating()));
         holder.author.setText(review.getAuthor());
+        holder.date.setText(dateFormat.format(review.getDate()));
+        holder.error.setVisibility(review.isPending() ? View.VISIBLE : View.GONE);
+        Context context = holder.view.getContext();
+        holder.view.setBackgroundColor(context.getResources().getColor(review.isPending() ?
+                R.color.colorBase :
+                R.color.colorBaseLight));
+
+        holder.retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onInteractionListener.onClickRetry(null);
+            }
+        });
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PendingReview pendingReview = new PendingReview();
+                pendingReview.setId(review.getId());
+                onInteractionListener.onClickDelete(pendingReview);
+            }
+        });
     }
 
     // ViewHolders
 
     class ReviewViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.view)
+        View view;
         @BindView(R.id.tv_title)
         TextView title;
         @BindView(R.id.tv_message)
@@ -79,6 +110,14 @@ public class ReviewsAdapter extends PagedListAdapter<Review, ReviewsAdapter.Revi
         TextView rating;
         @BindView(R.id.tv_author)
         TextView author;
+        @BindView(R.id.tv_date)
+        TextView date;
+        @BindView(R.id.bt_retry)
+        Button retryButton;
+        @BindView(R.id.bt_delete)
+        Button deleteButton;
+        @BindView(R.id.container_error)
+        View error;
 
         public ReviewViewHolder(View itemView) {
             super(itemView);

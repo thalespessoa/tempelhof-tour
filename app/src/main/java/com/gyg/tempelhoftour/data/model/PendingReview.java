@@ -17,10 +17,10 @@ import java.util.Date;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(tableName = "reviews")
-public class Review {
+@Entity(tableName = "pending_reviews")
+public class PendingReview {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     @JsonProperty("review_id")
     private int id;
@@ -31,7 +31,7 @@ public class Review {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = AppConfig.API_DATE_FORMAT, timezone = "GMT")
     protected Date date;
     @JsonIgnore
-    private boolean pending = false;
+    private boolean pending = true;
 
     public boolean isPending() {
         return pending;

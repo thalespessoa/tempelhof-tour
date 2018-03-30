@@ -10,12 +10,14 @@ import android.support.annotation.NonNull;
 
 import com.gyg.tempelhoftour.app.AppConfig;
 import com.gyg.tempelhoftour.data.db.LocalDatabase;
+import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
-import com.gyg.tempelhoftour.data.model.ReviewsResponse;
+import com.gyg.tempelhoftour.data.model.ServerResponse;
 import com.gyg.tempelhoftour.data.remote.HttpException;
 import com.gyg.tempelhoftour.data.remote.NetworkApi;
 import com.gyg.tempelhoftour.data.remote.ServiceCallback;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -48,12 +50,12 @@ public class DataRepository {
                 .setBoundaryCallback(new PagedList.BoundaryCallback<Review>() {
                     @Override
                     public void onItemAtEndLoaded(@NonNull Review itemAtEnd) {
-                        fetchEventsFromServer(getLastPageLoaded());
+                        fetchReviewsFromServer(getLastPageLoaded());
                     }
 
                     @Override
                     public void onZeroItemsLoaded() {
-                        fetchEventsFromServer(0);
+                        fetchReviewsFromServer(0);
                     }
                 });
         mReviewsLiveData = livePagedListBuilder.build();
@@ -73,21 +75,59 @@ public class DataRepository {
     }
 
     public void refresh() {
-        fetchEventsFromServer(0);
+        fetchReviewsFromServer(0);
+    }
+
+    public void saveReview(final PendingReview pendingReview) {
+        mDiskIO.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalDatabase.reviewDao().insert(pendingReview);
+            }
+        });
+
+        mNetworkApi.getReviewsApi()
+                .save(pendingReview)
+                .enqueue(new ServiceCallback<ServerResponse<Review>>() {
+                    @Override
+                    public void onSuccess(final ServerResponse<Review> reponse) {
+                        mDiskIO.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mLocalDatabase.reviewDao().delete(pendingReview);
+                                mLocalDatabase.reviewDao().insert(reponse.getData());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(HttpException exception) {
+
+                    }
+                });
+    }
+
+    public void deletePendingReview(final PendingReview pendingReview) {
+        mDiskIO.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalDatabase.reviewDao().delete(pendingReview);
+            }
+        });
     }
 
     // ---------------------------------------------------------------------------------------------
     // Private
     // ---------------------------------------------------------------------------------------------
 
-    private void fetchEventsFromServer(final int page) {
+    private void fetchReviewsFromServer(final int page) {
 
         mNetworkApi.getReviewsApi()
-                .fetch(page)
-                .enqueue(new ServiceCallback<ReviewsResponse>() {
+                .fetch(page, AppConfig.API_PAGE_SIZE)
+                .enqueue(new ServiceCallback<ServerResponse<List<Review>>>() {
                     @Override
-                    public void onSuccess(final ReviewsResponse response) {
-                        if(response.isStatus()) {
+                    public void onSuccess(final ServerResponse<List<Review>> response) {
+                        if (response.isStatus()) {
                             mDiskIO.execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -96,7 +136,7 @@ public class DataRepository {
                             });
 
                             SharedPreferences.Editor editor = mSharedPref.edit();
-                            editor.putInt("nextPage", page+1);
+                            editor.putInt("nextPage", page + 1);
                             editor.apply();
                         }
                     }

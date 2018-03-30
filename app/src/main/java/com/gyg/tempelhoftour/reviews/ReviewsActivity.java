@@ -14,13 +14,16 @@ import android.support.v7.widget.RecyclerView;
 import com.gyg.tempelhoftour.R;
 import com.gyg.tempelhoftour.app.ApplicationController;
 import com.gyg.tempelhoftour.app.ViewModelFactory;
+import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ReviewsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class ReviewsActivity extends AppCompatActivity implements
+        SwipeRefreshLayout.OnRefreshListener,
+        ReviewsAdapter.OnInteractionListener {
 
     @BindView(R.id.rv_reviews)
     protected RecyclerView mRecyclerView;
@@ -41,6 +44,8 @@ public class ReviewsActivity extends AppCompatActivity implements SwipeRefreshLa
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mReviewsAdapter);
 
+        mReviewsAdapter.setOnInteractionListener(this);
+
         mSwipeRefresh.setOnRefreshListener(this);
 
         mReviewsViewModel = ViewModelProviders.of(ReviewsActivity.this,
@@ -58,7 +63,8 @@ public class ReviewsActivity extends AppCompatActivity implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        mReviewsViewModel.refresh();
+//        mReviewsViewModel.refresh();
+        mSwipeRefresh.setRefreshing(false);
     }
 
     @OnClick(R.id.bt_add_review)
@@ -66,10 +72,26 @@ public class ReviewsActivity extends AppCompatActivity implements SwipeRefreshLa
         new AddReviewFragment()
                 .setOnReviewFinish(new AddReviewFragment.OnReviewFinish() {
                     @Override
-                    public void onReviewFinish(Review review) {
-                        mReviewsViewModel.saveReview(review);
+                    public void onReviewFinish(PendingReview pendingReview) {
+                        mReviewsViewModel.saveReview(pendingReview);
+                        mRecyclerView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mRecyclerView.smoothScrollToPosition(0);
+                            }
+                        }, 500);
                     }
                 })
                 .show(getSupportFragmentManager(), "add");
+    }
+
+    @Override
+    public void onClickDelete(PendingReview pendingReview) {
+        mReviewsViewModel.deletePendingReview(pendingReview);
+    }
+
+    @Override
+    public void onClickRetry(PendingReview pendingReview) {
+
     }
 }

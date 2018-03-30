@@ -10,13 +10,13 @@ Min SDK 21
 
 Libraries:
 
-Dagger 2: Creates, manages and inject data access classes in the application
-Retrofit 2: Manages the communication with server
-Jackson: Parse json from server
-Room: To persist local data
-Paging: To paginate data loading from local and remote
-Butterknife: Bind views
-Stetho: To debugging communication between app and server
+- Dagger 2: Creates, manages and inject data access classes in the application
+- Retrofit 2: Manages the communication with server
+- Jackson: Parse json from server
+- Room: To persist local data
+- Paging: To paginate data loading from local and remote
+- Butterknife: Bind views
+- Stetho: To debugging communication between app and server
 
 ======= Main classes
 

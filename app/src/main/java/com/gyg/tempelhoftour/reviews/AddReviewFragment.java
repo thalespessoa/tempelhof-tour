@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
@@ -52,14 +53,14 @@ public class AddReviewFragment extends DialogFragment {
         View rootView = getActivity().getLayoutInflater().inflate(R.layout.fragment_add_review, null);
         ButterKnife.bind(this, rootView);
 
-        return new AlertDialog.Builder(getContext())
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(rootView)
                 .setCancelable(false)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(onReviewFinish != null) {
+                        if(onReviewFinish != null && validate()) {
                             Review review = new Review();
                             review.setId(UUID.randomUUID().toString());
                             review.setAuthor(mAuthorEditText.getText().toString());
@@ -74,5 +75,19 @@ public class AddReviewFragment extends DialogFragment {
                     }
                 })
                 .create();
+
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setCanceledOnTouchOutside(false);
+
+        return dialog;
+    }
+
+    private boolean validate() {
+        boolean hasError = false;
+        if(mAuthorEditText.getText().length() == 0) {
+            mAuthorEditText.setError("Voce precisa");
+            hasError = true;
+        }
+        return !hasError;
     }
 }

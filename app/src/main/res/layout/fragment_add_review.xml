@@ -10,12 +10,16 @@
         android:id="@+id/et_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:inputType="text|textCapSentences"
         android:hint="@string/author"/>
 
     <EditText
         android:id="@+id/et_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:inputType="text|textCapSentences"
         android:hint="@string/title"/>
 
     <EditText
@@ -23,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/message"
+        android:inputType="textCapSentences"
         android:gravity="bottom"/>
 
     <RatingBar

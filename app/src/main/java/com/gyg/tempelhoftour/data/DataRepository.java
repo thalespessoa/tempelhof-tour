@@ -30,18 +30,16 @@ public class DataRepository {
 
     private NetworkApi mNetworkApi;
     private LocalDatabase mLocalDatabase;
-    private Application mApplication;
     private LiveData<PagedList<Review>> mReviewsLiveData;
     private SharedPreferences mSharedPref;
     private MutableLiveData<NetworkState> mNetworkStateLiveData;
 
     private Executor mDiskIO;
 
-    public DataRepository(NetworkApi networkApi, LocalDatabase localDatabase, Application application) {
+    public DataRepository(NetworkApi networkApi, LocalDatabase localDatabase, Context context) {
         mNetworkApi = networkApi;
         mLocalDatabase = localDatabase;
-        mApplication = application;
-        mSharedPref = application.getSharedPreferences("gygPrefs", Context.MODE_PRIVATE);
+        mSharedPref = context.getSharedPreferences("gygPrefs", Context.MODE_PRIVATE);
 
         mDiskIO = Executors.newSingleThreadExecutor();
 

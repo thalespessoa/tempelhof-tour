@@ -17,7 +17,6 @@ public abstract class ServiceCallback<T> implements Callback<T> {
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
-        System.out.println("ServiceCallback.onResponse: "+response);
         if (response.isSuccessful()) {
             onSuccess(response.body());
         } else {

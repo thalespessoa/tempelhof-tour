@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.gyg.tempelhoftour.R;
 import com.gyg.tempelhoftour.app.ApplicationController;
 import com.gyg.tempelhoftour.app.ViewModelFactory;
 import com.gyg.tempelhoftour.data.model.Review;
+import com.gyg.tempelhoftour.data.remote.NetworkState;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,12 +60,25 @@ public class ReviewsActivity extends AppCompatActivity implements
                 mSwipeRefresh.setRefreshing(false);
             }
         });
+
+        mReviewsViewModel.getReviewsStateLiveData().observe(this, new Observer<NetworkState>() {
+            @Override
+            public void onChanged(@Nullable NetworkState networkState) {
+                if(networkState.getStatus() != NetworkState.Status.RUNNING) {
+                    mSwipeRefresh.setRefreshing(false);
+                }
+                if(networkState.getStatus() == NetworkState.Status.FAILED) {
+                    Toast.makeText(ReviewsActivity.this,
+                            networkState.getError().getMessage(ReviewsActivity.this),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
     public void onRefresh() {
         mReviewsViewModel.refresh();
-        mSwipeRefresh.setRefreshing(false);
     }
 
     @OnClick(R.id.bt_add_review)
@@ -85,12 +100,12 @@ public class ReviewsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickDelete(Review review) {
-        mReviewsViewModel.deletePendingReview(review);
+    public void onClickDelete(Review pendingReview) {
+        mReviewsViewModel.deletePendingReview(pendingReview);
     }
 
     @Override
-    public void onClickRetry(Review review) {
-
+    public void onClickRetry(Review pendingReview) {
+        Toast.makeText(this, "RETRY NOT IMPLEMENTED", Toast.LENGTH_SHORT).show();
     }
 }

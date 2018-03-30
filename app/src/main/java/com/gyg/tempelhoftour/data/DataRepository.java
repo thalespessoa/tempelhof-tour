@@ -2,6 +2,7 @@ package com.gyg.tempelhoftour.data;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.content.Context;
@@ -14,6 +15,7 @@ import com.gyg.tempelhoftour.data.model.Review;
 import com.gyg.tempelhoftour.data.model.ServerResponse;
 import com.gyg.tempelhoftour.data.remote.HttpException;
 import com.gyg.tempelhoftour.data.remote.NetworkApi;
+import com.gyg.tempelhoftour.data.remote.NetworkState;
 import com.gyg.tempelhoftour.data.remote.ServiceCallback;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class DataRepository {
     private Application mApplication;
     private LiveData<PagedList<Review>> mReviewsLiveData;
     private SharedPreferences mSharedPref;
+    private MutableLiveData<NetworkState> mNetworkStateLiveData;
 
     private Executor mDiskIO;
 
@@ -58,6 +61,7 @@ public class DataRepository {
                     }
                 });
         mReviewsLiveData = livePagedListBuilder.build();
+        mNetworkStateLiveData = new MutableLiveData<>();
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -73,23 +77,32 @@ public class DataRepository {
         return mReviewsLiveData;
     }
 
+    public MutableLiveData<NetworkState> getNetworkStateLiveData() {
+        return mNetworkStateLiveData;
+    }
+
     public void refresh() {
         fetchReviewsFromServer(0);
     }
 
-    public void saveReview(final Review pendingReview) {
+    public void saveReviewLocal(final Review pendingReview) {
         mDiskIO.execute(new Runnable() {
             @Override
             public void run() {
                 mLocalDatabase.reviewDao().insert(pendingReview);
             }
         });
+        saveReviewRemote(pendingReview);
+    }
 
+    public void saveReviewRemote(final Review pendingReview) {
+        mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.RUNNING, null));
         mNetworkApi.getReviewsApi()
                 .save(pendingReview)
                 .enqueue(new ServiceCallback<ServerResponse<Review>>() {
                     @Override
                     public void onSuccess(final ServerResponse<Review> reponse) {
+                        mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.SUCCESS, null));
                         mDiskIO.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -101,6 +114,7 @@ public class DataRepository {
 
                     @Override
                     public void onError(HttpException exception) {
+                        mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.FAILED, exception));
                     }
                 });
     }
@@ -119,12 +133,13 @@ public class DataRepository {
     // ---------------------------------------------------------------------------------------------
 
     private void fetchReviewsFromServer(final int page) {
-
+        mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.RUNNING, null));
         mNetworkApi.getReviewsApi()
                 .fetch(page, AppConfig.API_PAGE_SIZE)
                 .enqueue(new ServiceCallback<ServerResponse<List<Review>>>() {
                     @Override
                     public void onSuccess(final ServerResponse<List<Review>> response) {
+                        mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.SUCCESS, null));
                         if (response.isStatus()) {
                             mDiskIO.execute(new Runnable() {
                                 @Override
@@ -143,7 +158,7 @@ public class DataRepository {
 
                     @Override
                     public void onError(HttpException exception) {
-                        System.out.println("DataRepository.onError: ");
+                        mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.FAILED, exception));
                     }
                 });
     }

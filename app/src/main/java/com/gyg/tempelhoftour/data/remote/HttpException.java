@@ -21,7 +21,6 @@ import retrofit2.Response;
 public class HttpException {
 
     public static int ERROR_SERVER = 100;
-    public static int ERROR_UNKNOWN = 101;
 
     private int mCode;
     private String mMessage;
@@ -32,7 +31,7 @@ public class HttpException {
         } else if(mCode == ERROR_SERVER) {
             return context.getResources().getString(R.string.error_server);
         } else {
-            return context.getResources().getString(R.string.error_unknown);
+            return String.format("%d: %s", mCode, context.getResources().getString(R.string.error_unknown));
         }
     }
 
@@ -41,22 +40,9 @@ public class HttpException {
     }
 
     public HttpException(Response response) {
-
-        Map<String, Object> body;
-
-        try {
-            String src = response.errorBody().string();
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            body = mapper.readValue(src, HashMap.class);
-            mMessage = body.get("detail").toString();
-            mCode = Integer.valueOf(body.get("status").toString());
-        } catch (IOException e) {
-            body = null;
-            mCode = ERROR_UNKNOWN;
-        } catch (Exception e) {
-            mCode = ERROR_UNKNOWN;
+        mCode = response.code();
+        if(!response.message().equals("")) {
+            mMessage = String.format("%d: %s", response.message());
         }
-
     }
 }

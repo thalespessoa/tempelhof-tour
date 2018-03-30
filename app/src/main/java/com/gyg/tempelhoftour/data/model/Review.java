@@ -26,8 +26,8 @@ public class Review {
 
     @PrimaryKey
     @NonNull
-    @JsonProperty("review_id")
     @JsonSerialize(using = ToStringSerializer.class)
+    @JsonProperty(value = "review_id",  access = JsonProperty.Access.WRITE_ONLY)
     private String id;
     protected double rating;
     protected String title;

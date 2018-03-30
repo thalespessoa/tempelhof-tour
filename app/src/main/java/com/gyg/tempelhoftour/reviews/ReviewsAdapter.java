@@ -87,7 +87,7 @@ public class ReviewsAdapter extends PagedListAdapter<Review, ReviewsAdapter.Revi
             holder.retryButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onInteractionListener.onClickRetry(null);
+                    onInteractionListener.onClickRetry(review);
                 }
             });
             holder.deleteButton.setOnClickListener(new View.OnClickListener() {

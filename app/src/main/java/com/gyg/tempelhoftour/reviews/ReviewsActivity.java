@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import com.gyg.tempelhoftour.R;
 import com.gyg.tempelhoftour.app.ApplicationController;
 import com.gyg.tempelhoftour.app.ViewModelFactory;
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
 import butterknife.BindView;
@@ -63,7 +62,7 @@ public class ReviewsActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-//        mReviewsViewModel.refresh();
+        mReviewsViewModel.refresh();
         mSwipeRefresh.setRefreshing(false);
     }
 
@@ -72,7 +71,7 @@ public class ReviewsActivity extends AppCompatActivity implements
         new AddReviewFragment()
                 .setOnReviewFinish(new AddReviewFragment.OnReviewFinish() {
                     @Override
-                    public void onReviewFinish(PendingReview pendingReview) {
+                    public void onReviewFinish(Review pendingReview) {
                         mReviewsViewModel.saveReview(pendingReview);
                         mRecyclerView.postDelayed(new Runnable() {
                             @Override
@@ -86,12 +85,12 @@ public class ReviewsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickDelete(PendingReview pendingReview) {
-        mReviewsViewModel.deletePendingReview(pendingReview);
+    public void onClickDelete(Review review) {
+        mReviewsViewModel.deletePendingReview(review);
     }
 
     @Override
-    public void onClickRetry(PendingReview pendingReview) {
+    public void onClickRetry(Review review) {
 
     }
 }

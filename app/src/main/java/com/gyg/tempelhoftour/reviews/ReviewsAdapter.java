@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.gyg.tempelhoftour.R;
 import com.gyg.tempelhoftour.app.AppConfig;
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
 import java.text.SimpleDateFormat;
@@ -37,15 +36,15 @@ public class ReviewsAdapter extends PagedListAdapter<Review, ReviewsAdapter.Revi
     }
 
     interface OnInteractionListener {
-        void onClickDelete(PendingReview review);
-        void onClickRetry(PendingReview review);
+        void onClickDelete(Review review);
+        void onClickRetry(Review review);
     }
 
     public ReviewsAdapter() {
         super(new DiffCallback<Review>() {
             @Override
             public boolean areItemsTheSame(@NonNull Review oldItem, @NonNull Review newItem) {
-                return oldItem.getId() == newItem.getId();
+                return oldItem.getId().equals(newItem.getId());
             }
 
             @Override
@@ -69,31 +68,35 @@ public class ReviewsAdapter extends PagedListAdapter<Review, ReviewsAdapter.Revi
     @Override
     public void onBindViewHolder(ReviewViewHolder holder, int position) {
         final Review review = getItem(position);
+        Context context = holder.view.getContext();
         holder.title.setText(review.getTitle());
         holder.message.setText(review.getMessage());
         holder.rating.setText(String.valueOf(review.getRating()));
         holder.author.setText(review.getAuthor());
-        holder.date.setText(dateFormat.format(review.getDate()));
-        holder.error.setVisibility(review.isPending() ? View.VISIBLE : View.GONE);
-        Context context = holder.view.getContext();
-        holder.view.setBackgroundColor(context.getResources().getColor(review.isPending() ?
-                R.color.colorBase :
-                R.color.colorBaseLight));
+        if(!review.isPending()) {
+            holder.date.setText(dateFormat.format(review.getDate()));
+            holder.error.setVisibility(View.GONE);
+            holder.date.setVisibility(View.VISIBLE);
+            holder.view.setBackgroundColor(context.getResources().getColor(R.color.colorBaseLight));
+        } else {
+            holder.date.setText(dateFormat.format(review.getDate()));
+            holder.error.setVisibility(View.VISIBLE);
+            holder.date.setVisibility(View.GONE);
+            holder.view.setBackgroundColor(context.getResources().getColor(R.color.colorBase));
 
-        holder.retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onInteractionListener.onClickRetry(null);
-            }
-        });
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PendingReview pendingReview = new PendingReview();
-                pendingReview.setId(review.getId());
-                onInteractionListener.onClickDelete(pendingReview);
-            }
-        });
+            holder.retryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onInteractionListener.onClickRetry(null);
+                }
+            });
+            holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onInteractionListener.onClickDelete(review);
+                }
+            });
+        }
     }
 
     // ViewHolders

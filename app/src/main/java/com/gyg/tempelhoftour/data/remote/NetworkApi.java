@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gyg.tempelhoftour.BuildConfig;
 import com.gyg.tempelhoftour.app.AppConfig;
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 import com.gyg.tempelhoftour.data.model.ServerResponse;
 
@@ -76,6 +75,6 @@ public class NetworkApi {
         Call<ServerResponse<List<Review>>> fetch(@Query("page") int page, @Query("count") int count);
 
         @POST(AppConfig.POST_REVIEW)
-        Call<ServerResponse<Review>> save(@Body PendingReview pendingReview);
+        Call<ServerResponse<Review>> save(@Body Review pendingReview);
     }
 }

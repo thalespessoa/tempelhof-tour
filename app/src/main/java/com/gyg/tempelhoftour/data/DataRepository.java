@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 
 import com.gyg.tempelhoftour.app.AppConfig;
 import com.gyg.tempelhoftour.data.db.LocalDatabase;
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 import com.gyg.tempelhoftour.data.model.ServerResponse;
 import com.gyg.tempelhoftour.data.remote.HttpException;
@@ -78,7 +77,7 @@ public class DataRepository {
         fetchReviewsFromServer(0);
     }
 
-    public void saveReview(final PendingReview pendingReview) {
+    public void saveReview(final Review pendingReview) {
         mDiskIO.execute(new Runnable() {
             @Override
             public void run() {
@@ -102,16 +101,15 @@ public class DataRepository {
 
                     @Override
                     public void onError(HttpException exception) {
-
                     }
                 });
     }
 
-    public void deletePendingReview(final PendingReview pendingReview) {
+    public void deletePendingReview(final Review review) {
         mDiskIO.execute(new Runnable() {
             @Override
             public void run() {
-                mLocalDatabase.reviewDao().delete(pendingReview);
+                mLocalDatabase.reviewDao().delete(review);
             }
         });
     }
@@ -131,7 +129,9 @@ public class DataRepository {
                             mDiskIO.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mLocalDatabase.reviewDao().insertAll(response.getData());
+                                    List<Review> reviews = response.getData();
+                                    mLocalDatabase.reviewDao().deleteOlder(reviews.get(reviews.size()-1).getDate());
+                                    mLocalDatabase.reviewDao().insertAll(reviews);
                                 }
                             });
 

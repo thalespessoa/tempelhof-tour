@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorBaseLight">
+    <item>
+        <selector android:exitFadeDuration="@android:integer/config_mediumAnimTime">
+            <item android:state_selected="false">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/colorBase" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+</ripple>

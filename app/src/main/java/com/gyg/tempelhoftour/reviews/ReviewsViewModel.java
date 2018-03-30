@@ -6,7 +6,6 @@ import android.arch.paging.PagedList;
 
 import com.gyg.tempelhoftour.app.ApplicationComponent;
 import com.gyg.tempelhoftour.data.DataRepository;
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
 import javax.inject.Inject;
@@ -35,11 +34,11 @@ public class ReviewsViewModel extends ViewModel implements ApplicationComponent.
         mDataRepository.refresh();
     }
 
-    public void saveReview(PendingReview pendingReview) {
-        mDataRepository.saveReview(pendingReview);
+    public void saveReview(Review review) {
+        mDataRepository.saveReview(review);
     }
 
-    public void deletePendingReview(PendingReview pendingReview) {
-        mDataRepository.deletePendingReview(pendingReview);
+    public void deletePendingReview(Review review) {
+        mDataRepository.deletePendingReview(review);
     }
 }

@@ -7,9 +7,9 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,18 +18,20 @@ import java.util.List;
 @Dao
 public interface ReviewDao {
 
+    @Query("SELECT * FROM reviews ORDER BY date desc")
+    DataSource.Factory<Integer, Review> loadAllReviews();
+
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<Review> reviews);
-
-    @Query("SELECT * FROM pending_reviews UNION SELECT * FROM reviews ORDER BY date desc")
-    DataSource.Factory<Integer, Review> loadAllReviews();
 
     @Insert
     void insert(Review review);
 
-    @Insert
-    void insert(PendingReview review);
 
     @Delete
-    void delete(PendingReview review);
+    void delete(Review review);
+
+    @Query("DELETE FROM reviews WHERE date < :date")
+    void deleteOlder(Date date);
 }

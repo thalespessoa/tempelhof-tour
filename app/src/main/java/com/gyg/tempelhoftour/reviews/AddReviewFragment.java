@@ -6,17 +6,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import com.gyg.tempelhoftour.R;
-import com.gyg.tempelhoftour.data.model.PendingReview;
 import com.gyg.tempelhoftour.data.model.Review;
 
 import java.util.Date;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +42,7 @@ public class AddReviewFragment extends DialogFragment {
     }
 
     public interface OnReviewFinish {
-        void onReviewFinish(PendingReview review);
+        void onReviewFinish(Review review);
     }
 
     @NonNull
@@ -62,12 +60,14 @@ public class AddReviewFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(onReviewFinish != null) {
-                            PendingReview review = new PendingReview();
+                            Review review = new Review();
+                            review.setId(UUID.randomUUID().toString());
                             review.setAuthor(mAuthorEditText.getText().toString());
                             review.setTitle(mTitleEditText.getText().toString());
                             review.setMessage(mMessageEditText.getText().toString());
                             review.setRating(mRating.getRating());
                             review.setDate(new Date());
+                            review.setPending(true);
                             onReviewFinish.onReviewFinish(review);
                             dismiss();
                         }

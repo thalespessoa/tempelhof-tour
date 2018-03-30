@@ -7,7 +7,10 @@ import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.gyg.tempelhoftour.app.AppConfig;
 
 import java.util.Date;
@@ -17,13 +20,15 @@ import java.util.Date;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Entity(tableName = "reviews")
 public class Review {
 
     @PrimaryKey
     @NonNull
     @JsonProperty("review_id")
-    private int id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private String id;
     protected double rating;
     protected String title;
     protected String message;
@@ -42,11 +47,11 @@ public class Review {
     }
 
     @NonNull
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(@NonNull int id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 

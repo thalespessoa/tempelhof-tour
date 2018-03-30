@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gyg.tempelhoftour.R;
@@ -30,6 +32,8 @@ public class ReviewsActivity extends AppCompatActivity implements
     protected RecyclerView mRecyclerView;
     @BindView(R.id.sr_reviews)
     protected SwipeRefreshLayout mSwipeRefresh;
+    @BindView(R.id.tv_no_content)
+    protected TextView mNoContent;
 
     private ReviewsAdapter mReviewsAdapter;
     private ReviewsViewModel mReviewsViewModel;
@@ -65,6 +69,7 @@ public class ReviewsActivity extends AppCompatActivity implements
             public void onChanged(@Nullable PagedList<Review> reviews) {
                 mReviewsAdapter.setList(reviews);
                 mSwipeRefresh.setRefreshing(false);
+                mNoContent.setVisibility(reviews.size() > 0 ? View.GONE : View.VISIBLE);
             }
         });
 

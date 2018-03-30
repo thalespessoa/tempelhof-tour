@@ -26,7 +26,6 @@ public abstract class ServiceCallback<T> implements Callback<T> {
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        System.out.println("ServiceCallback.onFailure: "+t.getLocalizedMessage());
         onError(new HttpException(HttpException.ERROR_SERVER));
     }
 }

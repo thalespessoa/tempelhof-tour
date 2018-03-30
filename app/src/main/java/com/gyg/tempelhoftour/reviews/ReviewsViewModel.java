@@ -31,6 +31,10 @@ public class ReviewsViewModel extends ViewModel implements ApplicationComponent.
         mNetworkStateLiveData = mDataRepository.getNetworkStateLiveData();
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // Live Data
+    // ---------------------------------------------------------------------------------------------
+
     public LiveData<PagedList<Review>> getReviewsLiveData() {
         return mReviewsLiveData;
     }
@@ -38,6 +42,10 @@ public class ReviewsViewModel extends ViewModel implements ApplicationComponent.
     public LiveData<NetworkState> getReviewsStateLiveData() {
         return mNetworkStateLiveData;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // Actions
+    // ---------------------------------------------------------------------------------------------
 
     public void refresh() {
         mDataRepository.refresh();

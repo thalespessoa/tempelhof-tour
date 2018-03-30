@@ -77,14 +77,24 @@ public class DataRepository {
         return mReviewsLiveData;
     }
 
+    /**
+     * @return NetworkState of the review list
+     */
     public MutableLiveData<NetworkState> getNetworkStateLiveData() {
         return mNetworkStateLiveData;
     }
 
+    /**
+     * Request the list of reviews from server and update local database
+     */
     public void refresh() {
         fetchReviewsFromServer(0);
     }
 
+    /**
+     * Save pending review in the local data base, and send this review to server
+     * @param pendingReview
+     */
     public void saveReviewLocal(final Review pendingReview) {
         mDiskIO.execute(new Runnable() {
             @Override
@@ -95,6 +105,10 @@ public class DataRepository {
         saveReviewRemote(pendingReview);
     }
 
+    /**
+     * Send a review to server
+     * @param pendingReview
+     */
     public void saveReviewRemote(final Review pendingReview) {
         mNetworkStateLiveData.setValue(new NetworkState(NetworkState.Status.RUNNING, null));
         mNetworkApi.getReviewsApi()
@@ -119,6 +133,10 @@ public class DataRepository {
                 });
     }
 
+    /**
+     * Delete a pending review from data base
+     * @param review
+     */
     public void deletePendingReview(final Review review) {
         mDiskIO.execute(new Runnable() {
             @Override

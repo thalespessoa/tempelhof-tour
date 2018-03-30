@@ -44,11 +44,18 @@ public class ReviewsActivity extends AppCompatActivity implements
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mReviewsAdapter);
-
         mReviewsAdapter.setOnInteractionListener(this);
 
         mSwipeRefresh.setOnRefreshListener(this);
 
+        configViewModel();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // ViewModel observers
+    // ---------------------------------------------------------------------------------------------
+
+    private void configViewModel() {
         mReviewsViewModel = ViewModelProviders.of(ReviewsActivity.this,
                 new ViewModelFactory((ApplicationController) getApplication()))
                 .get(ReviewsViewModel.class);
@@ -75,6 +82,10 @@ public class ReviewsActivity extends AppCompatActivity implements
             }
         });
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // Actions
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void onRefresh() {
